@@ -78,9 +78,15 @@ WeedAI/
 - [ ] **Testing:** Create unit tests for guardrail responses.
 
 ### Phase 3: Knowledge Graph & RAG
-- [ ] **Ingestion Pipeline:** Build scripts to parse APVMA PDFs and populate MongoDB/Neo4j.
-- [ ] **Graph Logic:** Implement `packages/graph` with RAG tools (Hybrid Search).
-- [ ] **Entity Extraction:** Use SpaCy/LLM to extract entities for the graph.
+- [ ] **Ingestion Pipeline:** Parse the `search-results.csv` export to identify unique active ingredient combinations and download representative PDF labels from `elabels.apvma.gov.au`.
+- [ ] **PDF Parsing:** Use `llama-parse` or `unstructured` to extract text and tables from downloaded PDFs.
+- [ ] **Graph Construction:**
+    - Use `langchain-neo4j` to build a Knowledge Graph.
+    - **Vector Store:** Use `Neo4jVector` to store text chunks with OpenAI embeddings.
+    - **Graph Structure:** Extract entities (Herbicide, Weed, Crop) and relationships (`CONTROLS`, `REGISTERED_FOR`) using an LLM extraction chain.
+- [ ] **Hybrid Retrieval:** Implement a custom retriever in `packages/graph` that combines:
+    - **Semantic Search:** `Neo4jVector.similarity_search()` for unstructured context.
+    - **Graph Query:** `GraphCypherQAChain` for structured questions (e.g., "List all herbicides for Ryegrass").
 
 ### Phase 4: Simulation Sidecar
 - [ ] **Containerization:** Create Dockerfile for `apps/simulation-sidecar` (Java + Python).
