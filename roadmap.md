@@ -79,7 +79,7 @@ WeedAI/
 
 ### Phase 3: Knowledge Graph & RAG
 - [ ] **Ingestion Pipeline:** Parse the `search-results.csv` export to identify unique active ingredient combinations and download representative PDF labels from `elabels.apvma.gov.au`.
-- [ ] **PDF Parsing:** Use `llama-parse` or `unstructured` to extract text and tables from downloaded PDFs.
+- [ ] **PDF Parsing:** Use `llama-parse` to extract text and tables from downloaded PDFs (chosen for superior table extraction).
 - [ ] **Graph Construction:**
     - Use `langchain-neo4j` to build a Knowledge Graph.
     - **Vector Store:** Use `Neo4jVector` to store text chunks with OpenAI embeddings.

@@ -1,0 +1,21 @@
+# Data
+*.pdf
+data/
+data/labels/
+data/parsed/
+
+# Environment & Config
+.env
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

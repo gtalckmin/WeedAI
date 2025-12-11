@@ -6,7 +6,9 @@ dependencies = [
     "requests",
     "beautifulsoup4",
     "lxml",
-    "tqdm"
+    "tqdm",
+    "llama-parse",
+    "python-dotenv"
 ]
 
 [build-system]

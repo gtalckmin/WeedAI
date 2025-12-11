@@ -14,7 +14,7 @@ Here is the detailed development roadmap and the architectural diagram.
 *Objective: Define the "Safety Box" for the AI. If the query isn't about crops, weeds, or herbicides, the system refuses to answer.*
 
   * **Sub-Tasks:**
-      * Define **Topical Rails** (Allowed topics: Agronomy, Botany, Weed Identification, Chemistry, Weather. Disallowed: Human Medicine, Politics, General Coding).
+      * Define **Topical Rails** (Allowed topics: Agronomy, Botany, Weed Identification, Chemistry, Weather. Disallowed: Human Medicine, Politics, General Coding, other tasks of agriculture that not related to weed management).
       * Implement **Jailbreak Detection** (Preventing users from bypassing safety prompts).
       * Develop **Hallucination Detection** (Check if cited herbicide rates actually exist in the retrieved context).
       * Set up PII (Personally Identifiable Information) masking if user farm data is uploaded.
@@ -27,7 +27,7 @@ Here is the detailed development roadmap and the architectural diagram.
 
   * **Sub-Tasks:**
       * Develop a scraper for the APVMA PubCRIS database to download PDF labels.
-      * Implement **Multi-Modal Parsing** to convert PDF Tables into Markdown. Create a vector store or embedding with key information. Remove repetitive information such as "Safety Directions", "First Aid Instructions". The goal is to extract only agronomically relevant data.
+      * Implement **Multi-Modal Parsing** to convert PDF Tables into Markdown. Create a vector store or embedding with key information. Remove repetitive information such as "Safety Directions", "First Aid Instructions". The goal is to extract only agronomically relevant data. 
       * Set up **MongoDB Atlas** for vector storage. Check whether to use Pinecone, ChromaDB or Weaviate as an alternative, .
       * Implement **Contextual Chunking** (Prepend product name/active ingredient to every text chunk).
   * **Libraries needed:** `llama-parse` (for PDF tables), `beautifulsoup4`, `pymongo`, `llama-index`.
@@ -39,7 +39,7 @@ Here is the detailed development roadmap and the architectural diagram.
 
   * **Sub-Tasks:**
       * Design the Ontology (Schema): `(Herbicide)-[:CONTROLS]->(Weed)`, `(Herbicide)-[:REGISTERED_FOR]->(Crop)`.
-      * Run Entity Extraction on the parsed text to populate Neo4j nodes.
+      * Run Entity Extraction on the parsed text to populate Neo4j nodes. This should include properties like `name`, `active_ingredient`, `application_rate`, `growth_stage`, `State`, etc.
       * Connect the RAG system to the Graph (GraphRAG) so the agent can query structure *and* text.
   * **Libraries needed:** `neo4j-driver`, `langchain-community` (GraphCypherQAChain), `spacy` (for entity recognition).
   * **Resources needed:** Neo4j AuraDB (Cloud) or Self-Hosted Enterprise Server.
@@ -141,7 +141,12 @@ graph TD
     class Mongo,Neo4j,SoilDB,JobQueue db;
     class WeatherAPI,WSW ext;
 ```
-
-### **Next Step**
-
-To ensure the **Guardrails** (Phase 1) are robust, would you like me to draft the **Colang** configuration (standard for NeMo Guardrails) that specifically blocks medical advice while permitting chemical safety instructions?
+ 
+## Points to consider (Agent to not delete):
+v0.1 - GA 11/12/25
+* Embeddings models can be fine-tuned for agronomic jargon to improve retrieval accuracy. This can rely on publically available transcripts of youtube videos from experts in the field, podcasts, technical publications etc. This can provide the Reinforcement Learning with Expert Feedback (RLEF) needed to improve model performance in niche domains, generating a dataset of Q&A pairs specific to weed management.
+* A better embedding would reduce hallucinations but also improve entry points for the graph RAG system, allowing more complex queries to be answered accurately.
+* When generating the knowledge graph, consider leveraging existing ontologies in the agricultural domain to ensure interoperability and standardization. The parsing of documents will require data clean up.
+* Focus should be given to asynchronous agents . Check the use of smolagent alongside langchain.
+* Need to consider the pipeline evaulation, Ragas for rag evaluation. 
+* Need to discuss on the front-end information for UX and UI design with stakeholders.
